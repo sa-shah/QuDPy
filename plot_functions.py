@@ -1,9 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 
 
 def multiplot(data=None, scan_range=None, labels=None, title_list=None, scale='linear', color_map='viridis', interpolation='spline36'):
+    """
+    Plot multiple dataset for spectral and evolution data
+    :param data: List of spectra or dipole expectation values or any other variable of interest
+    :param scan_range: The min and max of both axis in the format [xmin, xmax, ymin, ymax]
+    :param labels: List of label for each axis
+    :param title_list: List of titles for each plot
+    :param scale: Scaling of the data points, two choices are 'linear' and 'log'
+    :param color_map: Choice of colormap
+    :param interpolation: Interpolation for points in plot.
+    :return: Does not return anything
+    """
     if data is None:
         print('Nothing to plot, kindly provide the data')
         return
@@ -21,22 +31,21 @@ def multiplot(data=None, scan_range=None, labels=None, title_list=None, scale='l
     else:
         rows = int(np.ceil(num_plots / 3))
         cols = 3
-    print('rows ', rows, ' cols ', cols)
+
+    if scale == 'log':
+        data = np.array([log_scale(s.real) for s in data])
+
     axes = []
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16, 4))
     for k in range(num_plots):
         axes.append(fig.add_subplot(rows, cols, k + 1))
         subplot_title = (title_list[k])
         axes[-1].set_title(subplot_title)
-        if scale == 'log':
-            im = plt.imshow(data[k], cmap=color_map, norm=colors.LogNorm(), origin='lower', interpolation=interpolation,
-                       extent=scan_range)
-        else:
-            im = plt.imshow(data[k], cmap=color_map, origin='lower', interpolation=interpolation, extent=scan_range)
+        im = plt.imshow(data[k], cmap=color_map, origin='lower', interpolation=interpolation, extent=scan_range, aspect=1)
         if labels:
             plt.xlabel(labels[0])
             plt.ylabel(labels[1])
-        plt.colorbar(im)
+        plt.colorbar(im, ax=axes[-1])
 
     fig.tight_layout()
     plt.show()
@@ -45,6 +54,17 @@ def multiplot(data=None, scan_range=None, labels=None, title_list=None, scale='l
 
 
 def plot(data=None, scan_range=None, labels=None, title=None, scale='linear', color_map='viridis', interpolation='spline36'):
+    """
+    Plot multiple dataset for spectral and evolution data
+    :param data: List of spectra or dipole expectation values or any other variable of interest
+    :param scan_range: The min and max of both axis in the format [xmin, xmax, ymin, ymax]
+    :param labels: List of label for each axis
+    :param title: Title the plot
+    :param scale: Scaling of the data points, two choices are 'linear' and 'log'
+    :param color_map: Choice of colormap
+    :param interpolation: Interpolation for points in plot.
+    :return: Does not return anything
+    """
     if data is None:
         print('Nothing to plot, kindly provide the data')
         return
@@ -54,10 +74,8 @@ def plot(data=None, scan_range=None, labels=None, title=None, scale='linear', co
 
     plt.figure()
     if scale == 'log':
-        plt.imshow(data, cmap=color_map, norm=colors.LogNorm(), origin='lower', interpolation=interpolation,
-                       extent=scan_range)
-    else:
-        plt.imshow(data, cmap=color_map, origin='lower', interpolation=interpolation, extent=scan_range)
+        data = log_scale(data.real)
+    plt.imshow(data, cmap=color_map, origin='lower', interpolation=interpolation, extent=scan_range, aspect='auto')
     plt.colorbar()
     if title:
         plt.title(title)
@@ -68,3 +86,19 @@ def plot(data=None, scan_range=None, labels=None, title=None, scale='linear', co
 
     return
 
+
+def log_scale(z):
+    """
+    Simple function for rescaling the 2D input matrix to log scale.
+    Warning: the numbers between -1 and 1 are mapped to zero.
+    """
+    x, y = np.shape(z)
+    for n in range(x):
+        for m in range(y):
+            if z[n, m] >= 1:
+                z[n, m] = np.log(z[n, m])
+            elif z[n, m] <= -1:
+                z[n, m] = -np.log(-z[n, m])
+            else:
+                z[n, m] = 0
+    return z

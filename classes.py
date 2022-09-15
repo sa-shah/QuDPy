@@ -1,10 +1,9 @@
 from qutip import *
 import numpy as np
 import matplotlib.pyplot as plt
-import ufss  # digram generation
 
 class System():
-    '''
+    """
     The system class defines the physical system through a model hamiltonian.
     the elements internal to this class are:
     n = Maximum excited state
@@ -15,7 +14,7 @@ class System():
     c_ops = collapse operators that connect the system to the bath
     e_ops = observables, for which expectation values are required
     tlist = a list of time-steps for evolution
-    '''
+    """
     # some default values for parameters of interest
     hbar = 0.658211951  # eV fs
     h = 4.13566766  # eV fs
@@ -37,7 +36,7 @@ class System():
         print("system initialized")
 
     def diagram_donkey(self, interaction_times=None, diagrams=None, r=10):
-        '''
+        """
         Computes and plots a single evolution of the density matrix for a list of double-sided diagrams
         Mainly useful for inspection/instructional purposes.
         :param interaction_times: a list of arrival times for pulses and the last entry is time interval for detection
@@ -45,7 +44,7 @@ class System():
         :param diagrams: A list of double-sided diagrams (ufss diagramGenerator format)
         :param r: temporal resolution (time steps per fs)
         :return: None
-        '''
+        """
         if interaction_times is None:
             print("Error: interaction times not given")
         elif diagrams is None:
@@ -90,7 +89,7 @@ class System():
         return None
 
     def coherence2d(self, time_delays=None, diagram=None, scan_id=None, r=10, parallel=False):
-        '''
+        """
         computes the 2D coherence plot for a single diagram with only two scan-able delays.
         It can be parallelized if resources are available.
         :param time_delays: list of time delays (Note: provide time delay for each interaction even if zero)
@@ -99,7 +98,7 @@ class System():
         :param r: time resolution (steps per fs)
         :param parallel: Parallelization control, True or False
         :return: a list of density matrices, numpy array of first scan time and second scan time
-        '''
+        """
 
         if len(time_delays) != len(diagram):
             print('time delays for each interaction not given')
@@ -161,26 +160,38 @@ class System():
 
         dipole = np.array([expect(self.u, final_states[x][:]) for x in range(len(final_states))])
 
-        plt.figure()
-        plt.imshow(dipole.imag, origin='lower', interpolation='spline36', extent=[0, time_delays[scan_id[0]],
-                                                                                  0, time_delays[scan_id[1]]])
-        plt.show()
+        #plt.figure()
+        #plt.imshow(dipole.imag, origin='lower', interpolation='spline36', extent=[0, time_delays[scan_id[0]],
+        #                                                                          0, time_delays[scan_id[1]]])
+        #plt.show()
 
         return final_states, np.linspace(0, time_delays[scan_id[0]], time_delays[scan_id[0]] * r), t_list, dipole
 
     # some small helper functions to keep the coherence2D function readable
     def apply_pulse(self, rho, x):
-      if x[0]=='Ku':
-          rho = (self.a.dag()*rho)#.unit()
-      elif x[0]=='Bu':
-          rho = (rho*self.a)#.unit()
-      elif x[0]=='Kd':
-          rho = (self.a*rho)#.unit()
-      elif x[0]=='Bd':
-          rho = (rho*self.a.dag())#.unit()
-      return rho
+        """
+        Simple function for applying an operator on a density matrix
+        :param rho: initial density matrix
+        :param x: Operator
+        :return: final density matrix
+        """
+        if x[0] == 'Ku':
+            rho = (self.a.dag()*rho)#.unit()
+        elif x[0] == 'Bu':
+            rho = (rho*self.a)#.unit()
+        elif x[0] == 'Kd':
+            rho = (self.a*rho)#.unit()
+        elif x[0] == 'Bd':
+            rho = (rho*self.a.dag())#.unit()
+        return rho
 
     def para_mesolve(self, rho, only_last_state=True):
+        """
+        Simple function for facilitating parallelization in the function coherence2d
+        :param rho: density matrix
+        :param only_last_state: Bool for keeping whole array of density matrices or only the last one
+        :return: list of states or state
+        """
         if only_last_state:
             return mesolve(self.H, rho, self.tlist, self.c_ops, []).states[-1]
         else:
@@ -188,8 +199,25 @@ class System():
 
     # some common plotting functions
 
-    def spectra(self, data=None, resolution=None):
-        return None
+    def spectra(self, dipoles=None, resolution=10):
+        """
+        Converts the list of dipoles into spectra though Fourier transform
+        :param dipoles:
+        :param resolution:
+        :return: List of spectra, minimum and maximum limits of each axis, grid of freq 1 and freq 2
+        """
+        if dipoles is None:
+            print('Input data missing')
+            return
+
+        spectra = [np.fft.fftshift(np.fft.fft2(mu)) for mu in dipoles]
+        # note the multiplication with 2pi is required because fft works with freq and qutip with omega
+        freq1 = np.fft.fftshift(np.fft.fftfreq(np.shape(spectra[0])[1], 1 / resolution)) * 2 * np.pi
+        freq2 = np.fft.fftshift(np.fft.fftfreq(np.shape(spectra[0])[0], 1 / resolution)) * 2 * np.pi
+        extent = [min(freq1), max(freq1), min(freq2), max(freq2)]
+        f1, f2 = np.meshgrid(freq1, freq2)
+
+        return spectra, extent, f1, f2
 
 
 
