@@ -2,7 +2,8 @@ from qutip import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-class System():
+
+class System:
     """
     The system class defines the physical system through a model hamiltonian.
     the elements internal to this class are:
