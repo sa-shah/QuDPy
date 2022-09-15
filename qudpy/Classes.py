@@ -219,6 +219,3 @@ class System:
         f1, f2 = np.meshgrid(freq1, freq2)
 
         return spectra, extent, f1, f2
-
-
-

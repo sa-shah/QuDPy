@@ -2,10 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def test():
-    print('hello world')
-    return None
-
 def multiplot(data=None, scan_range=None, labels=None, title_list=None, scale='linear', color_map='viridis', interpolation='spline36'):
     """
     Plot multiple dataset for spectral and evolution data

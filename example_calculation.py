@@ -1,10 +1,9 @@
-if __name__ == "__main__":
-    from qutip import *
-    import numpy as np
-    from classes import *
-    import matplotlib.pyplot as plt
-    import ufss  # diagram generation
-    import plot_functions as pf
+from qutip import *
+import numpy as np
+from qudpy.Classes import *
+import qudpy.plot_functions as pf
+import ufss  # diagram generation
+
 # Setting up the required double sided diagrams for tests
 # DiagramGenerator class, or DG for short
 DG = ufss.DiagramGenerator
@@ -30,7 +29,7 @@ time_ordered_diagrams_rephasing = R3rd.get_diagrams([0, 100, 200, 200])
 [R3, R1, R2] = time_ordered_diagrams_rephasing
 rephasing = [R1, R2, R3]
 print('the rephasing diagrams are R1, R2 and R3 ')
-#R3rd.display_diagrams(rephasing)
+# R3rd.display_diagrams(rephasing)
 
 sys1 = System()
 sys1.c_ops = []  # [sys1.a*0.5]
@@ -38,7 +37,7 @@ sys1.c_ops = []  # [sys1.a*0.5]
 # Uncomment the line below if you need to check the a single trial of the system evolution
 # states = sys1.diagram_donkey([0, 5, 10, 20], rephasing, r=10)
 
-time_delays = [10, 5, 15]
+time_delays = [10, 5, 10]
 scan_id = [0, 2]
 response_list = []
 
