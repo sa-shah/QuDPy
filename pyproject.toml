@@ -1,0 +1,22 @@
+# pyproject.toml
+# follownig instructions from https://realpython.com/pypi-publish-python-package/#prepare-your-package-for-publication
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qudpy"
+version = "1.1.0"
+description = "Nonlinear spectroscopy with quantum dynamics support with Qutip"
+readme = "README.md"
+authors = [{ name = "Syed A. Shah", email = "alamdar114@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = ["Intended Audience :: Science/Research","License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only", "Topic :: Scientific/Engineering"
+]
+keywords = ["Nonlinear Spectroscopy", "Quantum Dynamics", "Spectroscopic Response"]
+dependencies = ['qutip', 'ufss', 'matplotlib', 'numpy'
+]
+
+[project.urls]
+Homepage = "https://github.com/sa-shah/QuDPy.git"

@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+qudpy/Classes.py
+qudpy/__init__.py
+qudpy/plot_functions.py
+qudpy.egg-info/PKG-INFO
+qudpy.egg-info/SOURCES.txt
+qudpy.egg-info/dependency_links.txt
+qudpy.egg-info/requires.txt
+qudpy.egg-info/top_level.txt
