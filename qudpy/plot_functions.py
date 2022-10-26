@@ -180,6 +180,7 @@ def silva_plot(spectra_list=None, scan_range=None, labels=None, title_list=None,
     :param center_scale: Shift individual datasets to sent center value to zero.
     :param plot_sum: plots the total sum of the input data sets with separate graphs for real, imag and abs values
     :param plot_quadrant: only plots the selected quadrant(s) for the graphs
+    :param invert_y: flips the y-axis by converting -ve values to +ve
     :return: Does not return anything
     """
     if spectra_list is None:
