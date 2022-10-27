@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qudpy"
-version = "1.1.0"
+version = "1.2.0"
 description = "Nonlinear spectroscopy with quantum dynamics support with Qutip"
 readme = "README.md"
 authors = [{ name = "Syed A. Shah", email = "alamdar114@gmail.com" }]
