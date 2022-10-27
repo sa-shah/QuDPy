@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: qudpy
-Version: 1.1.0
+Version: 1.2.0
 Summary: Nonlinear spectroscopy with quantum dynamics support with Qutip
 Author-email: "Syed A. Shah" <alamdar114@gmail.com>
 License: MIT License
